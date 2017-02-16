@@ -34,7 +34,7 @@ Article.prototype.toHtml = function() {
 
   // DONE: Assigns into this.body the output of calling marked() on this.body, which converts any Markdown formatted text into HTML, and allows existing HTML to pass through unchanged
   this.body = marked(this.body);
-
+   console.log('Inside .toHtml','--> Creates HTML for each article')
 // DONE: Output of this method: the instance of Article is passed through the template() function to convert the raw data, whether from a data file or from the input form, into the article template HTML
   return template(this);
 };
@@ -49,7 +49,8 @@ Article.prototype.toHtml = function() {
  * - Outputs: For every element in the rows array, create an Article object, assign date to object and store object on the Article all property
  */
 Article.loadAll = function(rows) {
-  // DONE: Sort data according to date. If result is less than 0, sort a to index than b, which means a comes first, if result is greater than 0, sort b to a lower index than a, which means b comes first.
+  // DONE: Sort data according to date. If result is less than 0, sort a to lower index than b, which means a comes first, if result is greater than 0, sort b to a lower index than a, which means b comes first.
+  console.log('Inside of loadAll --> .initIndexPage ');
   rows.sort(function(a,b) {
     return (new Date(b.publishedOn)) - (new Date(a.publishedOn));
   });
@@ -75,8 +76,10 @@ Article.fetchAll = function(callback) {
   // DONE: Once /articles selector has been called, then it invokes an anonymous function, taking the results an argument, alluding to content .get
   .then(
     function(results) {
+      console.log('results.length',results.length);
       if (results.length) { // If records exist in the DB
         // DONE: feed to Article.loadAll method, then invokes articleViewInitIndexPage through callback alias
+        console.log('Inside of fetchAll (If SQL has data, load from database): --> .loadAll');
         Article.loadAll(results);
         callback();
       } else { // if NO records exist in the DB
@@ -85,6 +88,7 @@ Article.fetchAll = function(callback) {
         .then(function(rawData) {
           rawData.forEach(function(item) {
             let article = new Article(item);
+            console.log('Inside fetchAll (If SQL server is empty, populate data from JSON:) -->');
             article.insertRecord(); // Add each record to the DB
           })
         })
@@ -134,7 +138,8 @@ Article.truncateTable = function(callback) {
  */
 Article.prototype.insertRecord = function(callback) {
   // insertRecord: Article object is sent to /articles for storage in database
-   $.post('/articles', {author: this.author, authorUrl: this.authorUrl, body: this.body, category: this.category, publishedOn: this.publishedOn, title: this.title})
+   $.post('/articles', {author: this.author, authorUrl: this.authorUrl, body: this.body, category: this.category, publishedOn: this.publishedOn, title: this.title},
+   console.log('Inside of insertRecord: '))
   // insertRecord: let's us know that insertion of data onto server was successful
   .then(function(data) {
     console.log(data);

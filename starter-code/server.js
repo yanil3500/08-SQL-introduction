@@ -71,9 +71,15 @@ app.post('/articles', function(request, response) {
 
 app.put('/articles/:id', function(request, response) {
   client.query(
-    ``, // TODO: Write the SQL query to update an existing record
+    `UPDATE articles(title, author, "authorUrl", category, "publishedOn", body)
+    WHERE article_id = $1;`, // TODO: Write the SQL query to update an existing record
     [
-
+      request.body.title,
+      request.body.author,
+      request.body.authorUrl,
+      request.body.category,
+      request.body.publishedOn,
+      request.body.body
     ] // TODO: Get each value from the request's body
   );
   response.send('update complete');
@@ -81,15 +87,17 @@ app.put('/articles/:id', function(request, response) {
 
 app.delete('/articles/:id', function(request, response) {
   client.query(
-    ``, // TODO: Write the SQL query to delete a record
+    `DELETE FROM articles
+    WHERE article_id = $1;`, // DONE: Write the SQL query to delete a record
     [request.params.id]
   );
   response.send('Delete complete');
 });
 
+
 app.delete('/articles', function(request, response) {
   client.query(
-    '' // TODO: Write the SQl query to truncate the table
+    'DROP TABLE articles;' //
   );
   response.send('Delete complete');
 });
