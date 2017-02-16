@@ -40,20 +40,20 @@ Article.prototype.toHtml = function() {
 
 // ++++++++++++++++++++++++++++++++++++++
 
-// TODO
+// DONE
 /**
- * OVERVIEW of
- * - Describe what the method does
- * - Inputs: identify any inputs and their source
- * - Outputs: identify any outputs and their destination
+ * OVERVIEW of Article.loadAll()
+ * - Receives data from sql server and creates Article objects based on that sql data; Prepares sql data for use in html.
+ * - Inputs: An array containing data queried from sql server
+ * - Outputs: For every element in the rows array, create an Article object, assign date to object and store object on the Article all property
  */
 Article.loadAll = function(rows) {
-  // TODO: describe what the following code is doing
+  // DONE: Sort data according to date. If result is less than 0, sort a to index than b, which means a comes first, if result is greater than 0, sort b to a lower index than a, which means b comes first.
   rows.sort(function(a,b) {
     return (new Date(b.publishedOn)) - (new Date(a.publishedOn));
   });
 
-  // TODO: describe what the following code is doing
+  // DONE: For every piece of data at each element in our rows array, instantiate an Article object based on that data and push object onto the all property attached to Article constructor
   rows.forEach(function(ele) {
     Article.all.push(new Article(ele));
   })
@@ -61,25 +61,25 @@ Article.loadAll = function(rows) {
 
 // ++++++++++++++++++++++++++++++++++++++
 
-// TODO
+// DONE
 /**
- * OVERVIEW of
- * - Describe what the method does
- * - Inputs: identify any inputs and their source
- * - Outputs: identify any outputs and their destination
+ * OVERVIEW of Artcle.fetchAll(callback)
+ * - This method checks to see if records exist in the database, loads or creates the record depending on the result
+ * - Inputs: Callback function of articleViewInitIndexPage, that comes from articleView.js, and is invoked on index.html
+ * - Outputs:
  */
 Article.fetchAll = function(callback) {
-  // TODO: describe what the following code is doing
+  // DONE: Calls an ajax selector for /articles location
   $.get('/articles')
-  // TODO: describe what the following code is doing
+  // DONE: Once /articles selector has been called, then it invokes an anonymous function, taking the results an argument, alluding to content .get
   .then(
     function(results) {
       if (results.length) { // If records exist in the DB
-        // TODO: describe what the following code is doing
+        // DONE: feed to Article.loadAll method, then invokes articleViewInitIndexPage through callback alias
         Article.loadAll(results);
         callback();
       } else { // if NO records exist in the DB
-        // TODO: describe what the following code is doing
+        // DONE: Pull records from ./data/hackerIpsum.json, push those records onto the database
         $.getJSON('./data/hackerIpsum.json')
         .then(function(rawData) {
           rawData.forEach(function(item) {
@@ -87,11 +87,11 @@ Article.fetchAll = function(callback) {
             article.insertRecord(); // Add each record to the DB
           })
         })
-        // TODO: describe what the following code is doing
+        // DONE: After creating data in the database, calls itself with the intent of triggering executing block of statements in the if branch
         .then(function() {
           Article.fetchAll(callback);
         })
-        // TODO: describe what the following code is doing
+        // DONE: If output is something other than what is covered in the if/else throws an error and logs error to console
         .catch(function(err) {
           console.error(err);
         });
@@ -102,20 +102,20 @@ Article.fetchAll = function(callback) {
 
 // ++++++++++++++++++++++++++++++++++++++
 
-// TODO
+//
 /**
- * OVERVIEW of
- * - Describe what the method does
- * - Inputs: identify any inputs and their source
- * - Outputs: identify any outputs and their destination
+ * OVERVIEW of truncateTable
+ * - Take callback as parameter and deletes data from table
+ * - Inputs: Takes input from articles URL
+ * - Outputs: Returns table minus the truncated data
  */
 Article.truncateTable = function(callback) {
-  // TODO: describe what the following code is doing
+  // DONE: Calls ajax selector to articles and send a delete method (drops the table)
   $.ajax({
     url: '/articles',
     method: 'DELETE',
   })
-  // TODO: describe what the following code is doing
+  // DONE: Gets response from articleView, indicating data has been dropped from the server. Dropped data is then logged to console.
   .then(function(data) {
     console.log(data);
     if (callback) callback();
