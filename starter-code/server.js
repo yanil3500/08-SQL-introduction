@@ -16,6 +16,8 @@ const client = new pg.Client(conString);
 // REVIEW: Use the client object to connect to our DB.
 client.connect();
 
+//Collaborators: Eve, Brandon, Morgan
+
 // REVIEW: Install the middleware plugins so that our app is aware and can use the body-parser module
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
